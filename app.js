@@ -2,14 +2,17 @@ const botconfig = require("./botconfig.json");
 const tokenfile = require("./token.json");
 const Discord = require("discord.js");
 
+const fs = require("fs");
+
 const bot = new Discord.Client({disableEveryone: true});
+bot.commands = new Discord.Collection();
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} is online!`);
 
-  bot.user.setActivity("tutorials on TSC", {type: "WATCHING"});
+  bot.user.setActivity("Made by Cen", {type: "WATCHING"});
 
-  //bot.user.setGame("on SourceCade!");
+  //bot.user.setGame("Gotcha!");
 });
 
 bot.on("message", async message => {
@@ -20,11 +23,12 @@ bot.on("message", async message => {
   let messageArray = message.content.split(" ");
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
+  let commandfile = bot.commands.get(cmd.slice(prefix.length));
+  if(commandfile) commandfile.run(bot,message,args);
 
   if(cmd === `${prefix}kick`){
 
-    //!kick @daeshan askin for it
-
+    //!kick
     let kUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if(!kUser) return message.channel.send("Can't find user!");
     let kReason = args.join(" ").slice(22);
@@ -139,4 +143,4 @@ bot.on("message", async message => {
 
 });
 
-bot.login(process.env.BOT_TOKEN);
+bot.login(tokenfile.token);
